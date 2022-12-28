@@ -62,13 +62,12 @@
     <div class="container-fluid">
       {% if grade.passed %}
       <div class="alert alert-success">
-        <b> Congratulations, {{ user.firstname }}! </b> You have passed the exam
-        and completed the course with a score of {{ grade.score }}/{{
-        grade.total }}
+        <b> Congratulations, {{ user.first_name }}! </b> You have passed the exam
+        and completed the course with a score of {{ grade.score }}/{{ grade.total }}
       </div>
       {% else %}
       <div class="alert alert-danger">
-        <b>Failed</b> Sorry, {{ user.firstname }}! You have failed the exam with
+        <b>Failed</b> Sorry, {{ user.first_name }}! You have failed the exam with
         a score of {{ grade.score }}/{{ grade.total }}
       </div>
       <a
@@ -81,7 +80,7 @@
         <h5 class="">Exam results</h5>
         {% for question in course.question_set.all %}
         <div class="card-header">
-          <h5>{{ question.text}}</h5>
+          <h5>{{ question.text}}</h5> 
         </div>
         {% for choice in question.choice_set.all %} 
         {% if choice in answers and choice.is_answer %}
