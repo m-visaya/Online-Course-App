@@ -117,10 +117,11 @@ def submit(request, course_id):
     enrollment = Enrollment.objects.get(user=user,course=course)
     submission = Submission.objects.create(enrollment=enrollment)
     answers = extract_answers(request)
-    submission.choices.bulk_create(answers)
+    for answer in answers:
+        submission.choices.add(get_object_or_404(Choice,pk=answer))
     submission.save()
 
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:eval_exam', args=(submission.id,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:eval_exam', args=(course.id,submission.id,)))
 
 
 def show_exam_result(request, course_id, submission_id):
@@ -130,19 +131,14 @@ def show_exam_result(request, course_id, submission_id):
     score = 0
     total = 0
     answers = submission.choices.all()
-    qa = {}
     for answer in answers:
         if answer.is_answer:
             score += answer.question.grade
         total += answer.question.grade
-        if answer.question.id not in qa:
-            qa[answer.question.id] = []
-        qa[answer.question.id].append(answer)
-
 
     passed = True if score/total > 0.8 else False
 
-    context = {'course': course,'answers':qa, 'grade': {'score':score,'total':total,'passed':passed}}
+    context = {'course': course,'answers':answers, 'grade': {'score':score,'total':total,'passed':passed}}
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
