@@ -131,10 +131,14 @@ def show_exam_result(request, course_id, submission_id):
     score = 0
     total = 0
     answers = submission.choices.all()
-    for answer in answers:
-        if answer.is_answer:
-            score += answer.question.grade
-        total += answer.question.grade
+    for question in course.question_set.all():
+        is_correct = 1
+        for choice in question.choice_set.all():
+            if (not choice.is_answer and choice in answers) or (choice.is_answer and choice not in answers):
+                is_correct = 0
+                break
+        total += question.grade
+        score += is_correct
 
     passed = True if score/total > 0.8 else False
 
