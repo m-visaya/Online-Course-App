@@ -79,16 +79,16 @@
       {% endif %}
       <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
-        {% for key,value in answers.items %}
+        {% for question in course.question_set.all %}
         <div class="card-header">
-          <h5>{{ value[0].question.question_text}}</h5>
+          <h5>{{ question.text}}</h5>
         </div>
-        {% for choice in value[0].question.choice_set %} {% if choice in value
-        and choice.is_answer %}
+        {% for choice in question.choice_set.all %} 
+        {% if choice in answers and choice.is_answer %}
         <p class="text-success">Correct: {{ choice.text }}</p>
-        {% elif choice not in value and choice.is_answer %}
+        {% elif choice not in answers and choice.is_answer %}
         <p class="text-warning">Not selected: {{ choice.text }}</p>
-        {% elif choice not in value and not choice.is_answer %}
+        {% elif choice not in answers and not choice.is_answer %}
         <p>{{ choice.text }}</p>
         {% else %}
         <p class="text-danger">Wrong: {{ choice.text }}</p>
